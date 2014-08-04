@@ -1,0 +1,61 @@
+{
+  "name": "Task switcher prototype",
+  "description": "Web app template",
+  "launch_path": "/index.html",
+  "developer": {
+    "name": "The Gaia Team",
+    "url": "https://github.com/mozilla-b2g/gaia"
+  },
+  "locales": {
+    "ar": {
+      "name": "Task switcher prototype",
+      "description": "Web app template"
+    },
+    "de": {
+      "name": "Task switcher prototype",
+      "description": "Web app template"
+    },
+    "el": {
+      "name": "Task switcher prototype",
+      "description": "Web app template"
+    },
+    "en-US": {
+      "name": "Task switcher prototype",
+      "description": "Web app template"
+    },
+    "es": {
+      "name": "Task switcher prototype",
+      "description": "Web app template"
+    },
+    "fr": {
+      "name": "Task switcher prototype",
+      "description": "Web app template"
+    },
+    "it": {
+      "name": "Task switcher prototype",
+      "description": "Web app template"
+    },
+    "pt-BR": {
+      "name": "Task switcher prototype",
+      "description": "Web app template"
+    },
+    "ru": {
+      "name": "Task switcher prototype",
+      "description": "Web app template"
+    },
+    "tr": {
+      "name": "Task switcher prototype",
+      "description": "Web app template"
+    },
+    "zh-TW": {
+      "name": "Task switcher prototype",
+      "description": "Web app template"
+    }
+  },
+  "default_locale": "en-US",
+  "icons": {
+    "128": "/icon.png"
+  },
+  "activities": {
+  }
+}

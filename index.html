@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1">
+  <meta charset="utf-8">
+  <title></title>
+  <link rel="stylesheet" type="text/css" href="./style/task-card.css">
+  <style>
+  html, body {
+    margin: 0; padding: 0;
+    overflow: hidden;
+    height: 100%;
+    font-size: 10px;
+  }
+  .scrollable {
+    width: 100%;
+    height: 100%;
+    overflow-x: auto;
+    overflow-y: hidden;
+    background-color: #ccc;
+    white-space: nowrap;
+    -moz-box-sizing: border-box;
+    -moz-user-select: none;
+  }
+  #windows {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    top: 0; left: 0;
+    z-index: 1;
+  }
+  #windows.scrollable {
+    overflow-x: auto;
+  }
+
+  #cards-view {
+    position: absolute;
+    width: calc(3 * 320px + 20px);
+    height: 100%;
+    top: 0; left: calc(50% - (1.5 * 320px + 10px));
+    z-index: 2;
+    transform: scale(0.5);
+    transform-origin: 50% 30%;
+    pointer-events: none;
+  }
+
+  #cards-view.scrolling {
+    opacity: 0;
+    transition: opacity 0.4s;
+  }
+  .card {
+    position: absolute;
+    display: block;
+    width: 320px;
+    height: 480px;
+    margin: 0 0.5rem 0 0;
+    font-size: 3em;
+    outline: 1px solid purple;
+  }
+  #card-previous {
+  }
+  #card-current {
+    transform: translateX(340px);
+  }
+  #card-next {
+    transform: translateX(680px);
+  }
+
+  .appWindow {
+    display: block;
+    position: absolute;
+    top: 0;
+    left: -320px;
+    width: 320px;
+    height: 480px;
+    margin: 0 0.5rem 0 0;
+    transform: scale(0.5);
+    transform-origin: 50% 30%;
+    font-size: 3em;
+    background-color: rgba(255, 204, 0, 0.3);
+  }
+  .appWindow > iframe {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+  .appWindow.in-taskmanager > span {
+    position: absolute;
+    top: -40px;
+    display: block;
+    background-color: red;
+    width: 100%;
+    height: 40px;
+    z-index: 10;
+  }
+ .in-taskmanager {
+    outline: 2px solid red;
+ }
+ #stretcher {
+  height: 1px;
+  width: auto;
+  background-color: pink;
+ }
+
+/* .card .button {
+  pointer-events: auto;
+ }
+*/
+ #ruler {
+  width: 50%;
+  height: 6px;
+  background-color: green;
+  position: absolute;
+  z-index: 1001;
+  top: 0;
+  left: 0;
+ }
+</style>
+</head>
+
+<body>
+  <div id="ruler"></div>
+  <div id="cards-view">
+    <div class="card" id="card-current">
+      <header class="card-header"><h1 class="title"></h1>
+      <p class="subtitle"></p></header>
+      <div class="appPreview"></div>
+      <footer class="card-tray">
+        <button class="appIcon" data-button-action="select">
+        </button>
+        <menu class="buttonbar">
+          <button class="close-button" data-button-action="close"
+             role="button"></button>
+          <button class="favorite-button" data-button-action="favorite"
+             role="button"></button>
+      </menu></footer>
+    </div>
+    <div class="card" id="card-previous">
+      <header class="card-header"><h1 class="title"></h1>
+      <p class="subtitle"></p></header>
+      <div class="appPreview"></div>
+      <footer class="card-tray">
+        <button class="appIcon" data-button-action="select">
+        </button>
+      </footer>
+    </div>
+    <div class="card" id="card-next">
+      <header class="card-header"><h1 class="title"></h1>
+      <p class="subtitle"></p></header>
+      <div class="appPreview"></div>
+      <footer class="card-tray">
+        <button class="appIcon" data-button-action="select">
+        </button>
+      </footer>
+    </div>
+  </div>
+  <div id="windows">
+    <div id="stretcher"></div>
+    <div class="appWindow" data-position="11"><iframe src="window.html?http://www.google.com"></iframe><span>1</span></div>
+    <div class="appWindow" data-position="10"><iframe src="window.html?http://www.facebook.com"></iframe><span>2</span></div>
+    <div class="appWindow" data-position="9"><iframe src="window.html?http://www.youtube.com"></iframe><span>3</span></div>
+    <div class="appWindow" data-position="8"><iframe src="window.html?http://www.baidu.com"></iframe><span>4</span></div>
+    <div class="appWindow" data-position="7"><iframe src="window.html?http://www.wikipedia.org"></iframe><span>5</span></div>
+    <div class="appWindow" data-position="6"><iframe src="window.html?http://www.twitter.com"></iframe><span>6</span></div>
+    <div class="appWindow" data-position="5"><iframe src="window.html?http://www.qq.com"></iframe><span>7</span></div>
+    <div class="appWindow" data-position="4"><iframe src="window.html?http://www.taobao.com"></iframe><span>8</span></div>
+    <div class="appWindow" data-position="0"><iframe src="window.html?http://www.amazon.com"></iframe><span>9</span></div>
+    <div class="appWindow" data-position="1"><iframe src="window.html?http://www.live.com"></iframe><span>10</span></div>
+    <div class="appWindow" data-position="2"><iframe src="window.html?http://www.linkedin.com"></iframe><span>11</span></div>
+    <div class="appWindow" data-position="3"><iframe src="window.html?http://www.sina.com.cn"></iframe><span>12</span></div>
+  </div>
+
+  <script src="./js/app.js" defer></script>
+</body>
+</html>
