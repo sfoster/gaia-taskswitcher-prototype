@@ -5,6 +5,7 @@
   <meta charset="utf-8">
   <title></title>
   <link rel="stylesheet" type="text/css" href="./style/task-card.css">
+  <link rel="stylesheet" type="text/css" href="./style/window.css">
   <style>
   html, body {
     margin: 0; padding: 0;
@@ -53,11 +54,12 @@
     transform: scale(0.5);
     transform-origin: 50% 50%;
     pointer-events: none;
+    opacity: 1;
+    transition: opacity 0.3s;
   }
 
   #cards-view.scrolling {
     opacity: 0;
-    transition: opacity 0.4s;
   }
   .card {
     position: absolute;
@@ -78,6 +80,11 @@
     transform: translateX(660px);
   }
 
+  #windows > .appWindow.in-taskmanager:not(.lockScreenWindow) {
+    transform: scale(0.5);
+    transform-origin: 50% 50%;
+    opacity: 1;
+  }
   .appWindow {
     display: block;
     position: absolute;
@@ -86,8 +93,6 @@
     width: 320px;
     height: 480px;
     margin: 0 0.5rem 0 0;
-    transform: scale(0.5);
-    transform-origin: 50% 50%;
     font-size: 3em;
     background-color: rgba(255, 204, 0, 0.3);
   }
@@ -170,18 +175,6 @@
   </div>
   <div id="windows">
     <div id="stretcher"></div>
-    <div class="appWindow" data-position="11" title="11: google.com"><iframe src="window.html?http://www.google.com"></iframe><span>1</span></div>
-    <div class="appWindow" data-position="10" title="10: facebook.com"><iframe src="window.html?http://www.facebook.com"></iframe><span>2</span></div>
-    <div class="appWindow" data-position="9"  title="9: youtube.com"><iframe src="window.html?http://www.youtube.com"></iframe><span>3</span></div>
-    <div class="appWindow" data-position="8"  title="8: baidu.com"><iframe src="window.html?http://www.baidu.com"></iframe><span>4</span></div>
-    <div class="appWindow" data-position="7"  title="7: wikipedia.com"><iframe src="window.html?http://www.wikipedia.org"></iframe><span>5</span></div>
-    <div class="appWindow" data-position="6"  title="6: twitter.com"><iframe src="window.html?http://www.twitter.com"></iframe><span>6</span></div>
-    <div class="appWindow" data-position="5"  title="5: qq.com"><iframe src="window.html?http://www.qq.com"></iframe><span>7</span></div>
-    <div class="appWindow" data-position="4"  title="4: taobao.com"><iframe src="window.html?http://www.taobao.com"></iframe><span>8</span></div>
-    <div class="appWindow" data-position="0"  title="0: amazon.com"><iframe src="window.html?http://www.amazon.com"></iframe><span>9</span></div>
-    <div class="appWindow" data-position="1"  title="1: live.com"><iframe src="window.html?http://www.live.com"></iframe><span>10</span></div>
-    <div class="appWindow" data-position="2"  title="2: linkedin.com"><iframe src="window.html?http://www.linkedin.com"></iframe><span>11</span></div>
-    <div class="appWindow" data-position="3"  title="3: sina.com.cn"><iframe src="window.html?http://www.sina.com.cn"></iframe><span>12</span></div>
   </div>
 
 

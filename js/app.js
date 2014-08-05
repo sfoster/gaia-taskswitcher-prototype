@@ -13,16 +13,54 @@
     return Math.min(ubound, Math.max(value, lbound))
   }
 
+  // Mock AppWindow for the purposes of this prototype
+  function AppWindow(configuration) {
+    this.instanceID = 'appwindow_' + (AppWindow._idCounter++);
+    for(var key in configuration) {
+      this[key] = configuration[key];
+    }
+  };
+  AppWindow._idCounter = 0;
+  AppWindow.prototype.CLASS_LIST = 'appWindow';
+
+  AppWindow.prototype.view = function() {
+    return '<div class=" ' + this.CLASS_LIST +
+            ' " id="' + this.instanceID +
+            '" transition-state="closed">' +
+              '<div class="titlebar"></div>' +
+              '<div class="screenshot-overlay"></div>' +
+              '<div class="identification-overlay">' +
+                '<div>' +
+                  '<div class="icon"></div>' +
+                  '<span class="title"></span>' +
+                '</div>' +
+              '</div>' +
+              '<div class="fade-overlay"></div>' +
+              '<div class="touch-blocker"></div>' +
+              '<div class="browser-container"><iframe src="'+this.src+'"></iframe></div>' +
+           '</div>';
+  }
+  AppWindow.prototype.render = function() {
+    this.containerElement = document.getElementById('windows');
+    this.containerElement.insertAdjacentHTML('beforeend', this.view());
+    this.element = document.getElementById(this.instanceID);
+  };
+
   // Mock StackController for the purposes of this prototype
   StackManager = {
-    snapshot: function() {
-      var apps = Array.map(document.querySelectorAll('#windows .appWindow'), function(elm) {
-        return {
-          name: elm.dataset.position,
-          position: parseInt(elm.dataset.position, 10),
-          element: elm
-        };
+    init: function() {
+      this.apps = [
+        'google.com', 'facebook.com', 'youtube.com', 'baidu.com', 'wikipedia.com', 'twitter.com',
+        'qq.com', 'taobao.com', 'amazon.com', 'live.com', 'linkedin.com', 'sina.com.cn'
+      ].map(function(hostname, position) {
+        var url = './window.html?' + hostname;
+        var app = new AppWindow({ src: url, name: hostname, position: position });
+        app.render();
+        return app;
       });
+    },
+    snapshot: function() {
+      var apps = this.apps;
       apps.sort(function(a, b) {
         return a.position >= b.position;
       });
@@ -86,8 +124,12 @@
         console.log('start scrolling');
         this.overlay.classList.add('scrolling');
         this._scrolling = true;
-        this._scrollingTimerId = setTimeout(this._notScrolling.bind(this), 500);
       }
+      // reset timer
+      if (this._scrollingTimerId) {
+        clearTimeout(this._scrollingTimerId);
+      }
+      this._scrollingTimerId = setTimeout(this._notScrolling.bind(this), 120);
     },
     _notScrolling: function() {
       console.log('stop scrolling');
@@ -99,8 +141,7 @@
       }
     },
     _getCardAtPosition: function(position) {
-      var selector = '#windows .appWindow[data-position="' + position + '"]';
-      var card = document.querySelector(selector);
+      var card = StackManager.apps[position].element;
       return card;
     },
     _calculateCardPosition: function(position) {
@@ -286,6 +327,7 @@
     }
   };
 
+  StackManager.init();
   TaskSwitcher.init();
 
   exports.TaskSwitcher = TaskSwitcher;
