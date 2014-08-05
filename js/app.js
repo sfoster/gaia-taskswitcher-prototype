@@ -27,7 +27,7 @@
     return '<div class=" ' + this.CLASS_LIST +
             ' " id="' + this.instanceID +
             '" transition-state="closed">' +
-              '<div class="titlebar"></div>' +
+              '<div class="titlebar">' + this.title + '</div>' +
               '<div class="screenshot-overlay"></div>' +
               '<div class="identification-overlay">' +
                 '<div>' +
@@ -44,6 +44,21 @@
     this.containerElement = document.getElementById('windows');
     this.containerElement.insertAdjacentHTML('beforeend', this.view());
     this.element = document.getElementById(this.instanceID);
+
+    var overlay = '.identification-overlay';
+    this.identificationOverlay = this.element.querySelector(overlay);
+    var icon = '.identification-overlay .icon';
+    this.identificationIcon = this.element.querySelector(icon);
+    var title = '.identification-overlay .title';
+    this.identificationTitle = this.element.querySelector(title);
+
+    this.identificationTitle.textContent = this.name;
+
+    if (this.identificationIcon) {
+      this.identificationIcon.style.backgroundImage =
+        'url("' + this.iconUrl + '")';
+    }
+
   };
 
   // Mock StackController for the purposes of this prototype
@@ -54,7 +69,12 @@
         'qq.com', 'taobao.com', 'amazon.com', 'live.com', 'linkedin.com', 'sina.com.cn'
       ].map(function(hostname, position) {
         var url = './window.html?' + hostname;
-        var app = new AppWindow({ src: url, name: hostname, position: position });
+        var app = new AppWindow({
+          src: url,
+          name: hostname,
+          position: position,
+          iconUrl: './style/icons/Default.png'
+        });
         app.render();
         return app;
       });

@@ -1,3 +1,14 @@
+#cards-view .card {
+  position: absolute;
+  display: block;
+  bottom: -4rem;
+  width: 320px;
+  height: 10rem;
+  margin: 0 0.5rem 0 0;
+  font-size: 3em;
+  outline: 1px solid purple;
+}
+
 #cards-view .card .card-header {
   position: absolute;
   top: 0;
@@ -7,21 +18,7 @@
   -moz-box-sizing: border-box;
   display: none;
 }
-#cards-view .card .appPreview {
-  display: none;
-}
-#cards-view #card-current .card-header {
-  display: none;
-}
-#cards-view .card h1.title {
-  position: static;
-  z-index: auto;
-  text-align: center;
-  font-size: 1.4rem;
-  font-weight: 300;
-  text-overflow: ellipsis;
-  overflow-x: hidden;
-}
+
 #cards-view .card p.subtitle {
   display: none;
 }
@@ -34,31 +31,18 @@
   display: none;
 }
 
-#cards-view .card-tray {
-  position: absolute;
-  /* position in vertical middle to align with app/screenshot */
-  top: auto;
-  bottom: 0;
-  left: 0;
-  height: 3rem;
-  width: 100%;
-  transform-origin: 50% 0;
+#cards-view .card > .buttonbar {
   pointer-events: auto;
-  overflow: visible;
-  z-index: 100;
-  padding: 0;
-  -moz-box-sizing: border-box;
-  color: #fff;
 }
-#cards-view .card-tray > menu.buttonbar {
-  height: 3rem;
+
+#cards-view .card > .buttonbar {
   margin: 0;
   padding: 0;
-  background: rgba(255,255,255,0.95);
 }
-#cards-view .card-tray > menu.buttonbar > button {
-  background-size: 2rem auto;
-  background-position: center center;
+
+#cards-view .card > .buttonbar > button {
+  background-size: 3.5rem auto;
+  background-position: center top;
   background-repeat: no-repeat;
   background-color: transparent;
   width: 20%;
@@ -69,31 +53,22 @@
   top: 0;
   z-index: 99999;
 }
-#cards-view .card-tray .close-button {
+#cards-view .card > .buttonbar > .close-button {
   background-image: url(./images/close.png);
-  left: 0.8rem;
+  background-position: center 1rem;
+  left: 0;
 }
-#cards-view .card-tray .favorite-button {
+#cards-view .card > .buttonbar > .favorite-button {
   background-image: url(./images/favorite.png);
-  right: 0.8rem;
+  background-position: center 1rem;
+  right: 0;
 }
 
-#cards-view .card-tray > button.appIcon {
-  top: -1rem;
-  left: calc(50% - 4rem);
-  width: 8rem;
-  height: 8rem;
-  background-image: url(./icons/Default.png);
-  background-color: transparent;
-  background-position: center center;
-  background-repeat: no-repeat;
-  background-size: cover;
-  display: block;
-  border: none;
-  position: absolute;
-  z-index: 99999;
+#cards-view > button.appIcon {
+  display: none;
 }
-#cards-view li.card[data-card-position='current'] .close-button,
-#cards-view li.card[data-card-position='current'] .favorite-button {
+
+#cards-view #card-current.card .close-button,
+#cards-view #card-current.card .favorite-button {
   display: block;
 }

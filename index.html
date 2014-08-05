@@ -17,21 +17,31 @@
   }
   #screen {
     position: absolute;
-    top: calc(50% - 240px);
+    top: 0;
     left: calc(50% - 160px);
+    width: 100%;
+    max-width: 320px;
+    height: 100%;
+    max-height: 569px;
     overflow: hidden;
-    height: 480px;
-    width: 320px;
   }
 
  #ruler {
-  width: 50%;
+  width: 100%;
   height: 6px;
   background-color: green;
   position: absolute;
   z-index: 1001;
   top: 0;
   left: 0;
+  white-space: nowrap;
+ }
+ #ruler > .unit {
+  width: 1rem;
+  outline: 1px solid #999;
+  background-color: #fff;
+  height: 6px;
+  display: inline-block;
  }
 </style>
 </head>
@@ -42,36 +52,16 @@
   <div id="ruler"></div>
   <div id="cards-view">
     <div class="card" id="card-current">
-      <header class="card-header"><h1 class="title"></h1>
-      <p class="subtitle"></p></header>
-      <div class="appPreview"></div>
-      <footer class="card-tray">
-        <button class="appIcon" data-button-action="select">
-        </button>
-        <menu class="buttonbar">
-          <button class="close-button" data-button-action="close"
-             role="button"></button>
-          <button class="favorite-button" data-button-action="favorite"
-             role="button"></button>
-      </menu></footer>
+      <menu class="buttonbar">
+        <button class="close-button" data-button-action="close"
+           role="button"></button>
+        <button class="favorite-button" data-button-action="favorite"
+           role="button"></button>
+      </menu>
     </div>
     <div class="card" id="card-previous">
-      <header class="card-header"><h1 class="title"></h1>
-      <p class="subtitle"></p></header>
-      <div class="appPreview"></div>
-      <footer class="card-tray">
-        <button class="appIcon" data-button-action="select">
-        </button>
-      </footer>
     </div>
     <div class="card" id="card-next">
-      <header class="card-header"><h1 class="title"></h1>
-      <p class="subtitle"></p></header>
-      <div class="appPreview"></div>
-      <footer class="card-tray">
-        <button class="appIcon" data-button-action="select">
-        </button>
-      </footer>
     </div>
   </div>
   <div id="windows">
@@ -81,5 +71,14 @@
 
   </div>
   <script src="./js/app.js" defer></script>
+  <script type="text/javascript">
+  (function(container) {
+    var html = '';
+    for(var i=0; i<32; i++) {
+      html += '<div class="unit"></div>'
+    }
+    container.insertAdjacentHTML('beforeend', html);
+  })(document.getElementById('ruler'));
+  </script>
 </body>
 </html>
