@@ -8,11 +8,10 @@
   display: none;
 }
 #cards-view .card .appPreview {
-  display: block;
-  background-color: orange;
+  display: none;
 }
 #cards-view #card-current .card-header {
-  display: block;
+  display: none;
 }
 #cards-view .card h1.title {
   position: static;
@@ -26,22 +25,15 @@
 #cards-view .card p.subtitle {
   display: none;
 }
+
+/* what to show when we dont show a screenshot? */
 #cards-view .card > .appIconView {
-  position: absolute;
-  top: auto;
-  bottom: 0;
-  left: calc(50% - 20px);
-  width: 40px;
-  height: 40px;
-  background-image: url(./icons/Default.png);
-  background-position: center center;
-  background-repeat: no-repeat;
-  box-shadow: 0 0 6px 0 rgba(0,0,0,0.2);
-  z-index: 1;
 }
+
 #cards-view .screenshotView {
   display: none;
 }
+
 #cards-view .card-tray {
   position: absolute;
   /* position in vertical middle to align with app/screenshot */

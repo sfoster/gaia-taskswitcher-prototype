@@ -16,7 +16,11 @@
 </head>
 <body>
 <script>
-  document.body.innerHTML = location.search;
+  document.body.innerHTML = location.search.substring('?http://'.length);
+  document.body.addEventListener('click', function() {
+    alert('launch ' + document.body.innerHTML);
+  });
+
 </script>
 </body>
 </html>

@@ -41,7 +41,7 @@
     init: function() {
       this._fetchElements();
       this._registerEvents();
-      this._windowWidth = window.innerWidth;
+      this._windowWidth = 320;
       this._cardWidth = Math.min(320, this._windowWidth);
       var stack = this.stack = StackManager.snapshot();
       this._positionAppPreviews();
