@@ -5,6 +5,7 @@
   <meta charset="utf-8">
   <title></title>
   <link rel="stylesheet" type="text/css" href="./style/task-card.css">
+  <link rel="stylesheet" type="text/css" href="./style/task-switcher.css">
   <link rel="stylesheet" type="text/css" href="./style/window.css">
   <style>
   html, body {
@@ -14,7 +15,7 @@
     background-color: #000;
     font-size: 10px;
   }
-  #wrapper {
+  #screen {
     position: absolute;
     top: calc(50% - 240px);
     left: calc(50% - 160px);
@@ -22,107 +23,7 @@
     height: 480px;
     width: 320px;
   }
-  .scrollable {
-    width: 100%;
-    height: 100%;
-    overflow-x: auto;
-    overflow-y: hidden;
-    background-color: #ccc;
-    white-space: nowrap;
-    -moz-box-sizing: border-box;
-    -moz-user-select: none;
-  }
-  #windows {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    overflow: hidden;
-    top: 0; left: 0;
-    z-index: 1;
-  }
-  #windows.scrollable {
-    overflow-x: auto;
-  }
 
-  #cards-view {
-    position: absolute;
-    width: calc(3 * 320px + 20px);
-    height: calc(100% - 4rem);
-    top: 0;
-    left: -330px;
-    z-index: 2;
-    transform: scale(0.5);
-    transform-origin: 50% 50%;
-    pointer-events: none;
-    opacity: 1;
-    transition: opacity 0.3s;
-  }
-
-  #cards-view.scrolling {
-    opacity: 0;
-  }
-  .card {
-    position: absolute;
-    display: block;
-    top: 100%;
-    width: 320px;
-    height: 8rem;
-    margin: 0 0.5rem 0 0;
-    font-size: 3em;
-    outline: 1px solid purple;
-  }
-  #card-previous {
-  }
-  #card-current {
-    transform: translateX(330px);
-  }
-  #card-next {
-    transform: translateX(660px);
-  }
-
-  #windows > .appWindow.in-taskmanager:not(.lockScreenWindow) {
-    transform: scale(0.5);
-    transform-origin: 50% 50%;
-    opacity: 1;
-  }
-  .appWindow {
-    display: block;
-    position: absolute;
-    top: 0;
-    left: -320px;
-    width: 320px;
-    height: 480px;
-    margin: 0 0.5rem 0 0;
-    font-size: 3em;
-    background-color: rgba(255, 204, 0, 0.3);
-  }
-  .appWindow > iframe {
-    display: block;
-    width: 100%;
-    height: 100%;
-  }
-  .appWindow.in-taskmanager > span {
-    position: absolute;
-    top: -40px;
-    display: block;
-    background-color: red;
-    width: 100%;
-    height: 40px;
-    z-index: 10;
-  }
- .in-taskmanager {
-    outline: 2px solid red;
- }
- #stretcher {
-  height: 1px;
-  width: auto;
-  background-color: pink;
- }
-
-/* .card .button {
-  pointer-events: auto;
- }
-*/
  #ruler {
   width: 50%;
   height: 6px;
@@ -136,7 +37,7 @@
 </head>
 
 <body>
-  <div id="wrapper">
+  <div id="screen" class="cards-view">
 
   <div id="ruler"></div>
   <div id="cards-view">
