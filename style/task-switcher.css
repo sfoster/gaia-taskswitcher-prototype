@@ -17,7 +17,8 @@
   width: calc(3 * 320px + 32px);
   height: 100%;
   top: 0;
-  left: -336px;
+  /* add left/right buffers */
+  left: calc(-336px + 10px);
   z-index: 2;
   transform: scale(0.5);
   transform-origin: 50% 50%;
@@ -122,5 +123,5 @@
 #stretcher {
   height: 1px;
   width: auto;
-  background-color: pink;
+  background-color: transparent;
 }
