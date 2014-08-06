@@ -6,7 +6,7 @@
   height: 10rem;
   margin: 0 0.5rem 0 0;
   font-size: 3em;
-  outline: 1px solid purple;
+  /*outline: 1px solid purple;*/
 }
 
 #cards-view .card .card-header {
