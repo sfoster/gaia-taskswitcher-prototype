@@ -21,7 +21,7 @@
   z-index: 2;
   transform: scale(0.5);
   transform-origin: 50% 50%;
-  pointer-events: none;
+  /*pointer-events: none;*/
   opacity: 1;
   transition: opacity 0.3s;
 }
@@ -43,7 +43,7 @@
   transform-origin: 50% 50%;
   opacity: 1;
 }
-.appWindow {
+.appWindow.in-task-manager {
   display: block;
   position: absolute;
   top: 0;

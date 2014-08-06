@@ -45,6 +45,7 @@
 
   TaskSwitcher = {
     _registerEvents: function() {
+      this.overlay.addEventListener('click', this);
     },
     _listenForScroll: function() {
     },
@@ -79,7 +80,7 @@
 
       this._positionAppPreviews();
       this.currentPosition = 1; // get from stackmanager, but will normally be 1;
-      this.selectAppAtIndex(this.currentPosition);
+      this.moveToPosition(this.currentPosition);
       setTimeout(this._scrollListener.start.bind(this._scrollListener), 0);
     },
     _positionAppPreviews: function() {
@@ -106,7 +107,7 @@
 
       container.classList.add('scrollable');
     },
-    selectAppAtIndex: function(position) {
+    moveToPosition: function(position) {
       if (!position || position < 0 || position >= this.stack.length) {
         // out of bounds position, default to 0
         position = 0;
@@ -116,14 +117,31 @@
       this.scrollToPosition(position);
       // this.overlay.style.left = this._getAppAtPosition(position).element.style.left;
       // console.log('overlay left:: ', this._getAppAtPosition(position).element.style.left);
-      console.log('selectAppAtIndex: ', position);
+      console.log('moveToPosition: ', position);
       this.previousCard.update(this.stack[position - 1], position - 1);
       this.currentCard.update(this.stack[position], position);
       this.nextCard.update(this.stack[position + 1], position + 1);
     },
-    removeCard: function(card) {
-
+    cardAction: function (card, actionName) {
+      console.log('cardAction: ', actionName);
+      switch (actionName) {
+        case 'close' :
+          console.info('cardAction: TODO: close ' + card.app.name);
+          return;
+        case 'favorite' :
+          console.info('cardAction: TODO: favorite ' + card.app.name);
+          return;
+        case 'select' :
+          this.newStackPosition = card.position;
+          console.info('cardAction: switch to app: ' + card.app.name);
+          // Card switcher will get hidden when 'appopen' is fired.
+          return;
+      }
     },
+
+    removeCard: function(card) {
+    },
+
     closeApp: function(app, removeImmediately) {
       // not implemented yet
       return;
@@ -134,7 +152,7 @@
         // TODO: check spec for how to animate?
         // positioning after removing an app /should/ be cheap,
         this._positionAppPreviews();
-        this.selectAppAtIndex(Math.min(position, lastIndex));
+        this.moveToPosition(Math.min(position, lastIndex));
       }
     },
 
@@ -212,8 +230,64 @@
       switch (evt.type) {
         case 'scroll' :
           this._scrollInProgress();
+          break;
+        case 'click' :
+          console.log('handle click');
+          this.handleTap(evt);
+          break;
       }
     },
+    handleTap: function(evt) {
+      // Handle close events
+      var targetNode = evt.target;
+      var containerNode = targetNode.parentNode;
+
+      var tmpNode;
+      var cardElem;
+      var card = this.getCardForElement(targetNode);
+
+      if (card && ('buttonAction' in targetNode.dataset)) {
+        evt.stopPropagation();
+        this.cardAction(card, targetNode.dataset.buttonAction);
+        return;
+      }
+
+      if (card) {
+        // fallback action is to select the app under the tap
+        this.cardAction(card, 'select');
+        return;
+      } else {
+        console.log('handleTap: no card match for click:', evt);
+      }
+    },
+
+    getCardForElement: function(elem) {
+      var cardElem;
+      var tmpNode = elem;
+      do {
+        if (tmpNode.classList && tmpNode.classList.contains('card')) {
+          cardElem = tmpNode;
+          break;
+        }
+        if (tmpNode == this.element) {
+          break;
+        }
+      } while((tmpNode = tmpNode.parentNode));
+
+      if (!cardElem) {
+        console.log('no card found for node: ', elem);
+        return;
+      }
+      switch (cardElem) {
+        case this.previousCard.element:
+          return this.previousCard;
+        case this.currentCard.element:
+          return this.currentCard;
+        case this.nextCard.element:
+          return this.nextCard;
+      }
+    },
+
     scrollToPosition: function(position) {
       console.log('scrollToPosition: ', position);
       this._scrollListener.stop();
@@ -273,96 +347,6 @@
           callback();
         }
       }
-    }
-  };
-
-  // WIP scroll controller for the strip of cards that is TaskSwitcher
-  // hopefully not needed as we'll use native scrolling
-  CardStripScrollController = {
-    init: function() {
-      this._registerEvents();
-    },
-    _registerEvents: function() {
-      this.element.addEventListener('touchstart', this, false);
-      this.element.addEventListener('mousedown', this, false);
-    },
-    handleEvent: function(evt) {
-      switch (evt.type) {
-        case 'mousedown':
-        case 'touchstart':
-          this.onTouchStart(evt);
-          break;
-        case 'mousemove':
-        case 'touchmove':
-          this.onTouchMove(evt);
-          break;
-        case 'mouseup':
-        case 'touchend':
-          this.onTouchEnd(evt);
-          break;
-      }
-    },
-    onTouchStart: function(evt) {
-      // start panning
-      if (this._gesture) {
-        this._gesture.end();
-      }
-      this.clampScrollLeft = clamp.bind(null, 0, this.element.scrollLeftMax)
-
-      var origin = this.element.scrollLeft;
-      this._gesture = {
-        origin: origin,
-        from: evt.clientX,
-        to: evt.clientX,
-        lastTimestamp: evt.timeStamp,
-        timeStamp: evt.timeStamp,
-        vel: 0
-      };
-      this.element.addEventListener('touchend', this, false);
-      this.element.addEventListener('touchmove', this, false);
-      this.element.addEventListener('mousemove', this, false);
-      this.element.addEventListener('mouseup', this, false);
-      // in case we miss the touchend event
-      this._gestureTimeout = setTimeout(this.onTouchEnd.bind(this), 500);
-    },
-    onTouchMove: function(evt) {
-      var gesture = this._gesture;
-      if (!this._gesture) {
-        return;
-      }
-      var elapsed = evt.timeStamp - gesture.lastTimestamp;
-      var change = gesture.to - evt.clientX;
-      gesture.velocity = change/elapsed;
-      gesture.lastTimestamp = gesture.timeStamp,
-      gesture.to = evt.clientX
-      gesture.timeStamp = evt.timeStamp
-      // console.log('move: ', gesture);
-      // in case we miss the touchend event
-      clearTimeout(this._gestureTimeout);
-      this._gestureTimeout = setTimeout(this.onTouchEnd.bind(this), 500);
-      this.parent.scrollBy(change, gesture.velocity);
-    },
-    onTouchEnd: function(evt) {
-      var gesture = this._gesture;
-      if (!gesture) {
-        return;
-      }
-      clearTimeout(this._gestureTimeout);
-      console.log('end: ', evt, ' moved: ' + Math.abs(gesture.origin - gesture.to), gesture.velocity);
-      this._gesture = null;
-      this.element.removeEventListener('touchend', this, false);
-      this.element.removeEventListener('touchmove', this, false);
-      this.element.removeEventListener('mousemove', this, false);
-      this.element.removeEventListener('mouseup', this, false);
-
-      var momentumVelocityThreshold = 0.3;
-      var x = this.element.scrollLeft;
-      if(Math.abs(gesture.velocity) > momentumVelocityThreshold) {
-        x += gesture.velocity * 0.25 * 250;
-      }
-      var nextSnapPoint = Math.round(x / 250) * 250;
-      this.scrollBy(nextSnapPoint - this.element.scrollLeft, gesture.velocity);
-      console.log('snapped to: ', nextSnapPoint);
     }
   };
 

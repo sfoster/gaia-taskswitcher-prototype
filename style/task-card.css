@@ -3,7 +3,7 @@
   display: block;
   bottom: -4rem;
   width: 320px;
-  height: 10rem;
+  height: 70rem;
   margin: 0 0.5rem 0 0;
   font-size: 3em;
   /*outline: 1px solid purple;*/
@@ -36,8 +36,13 @@
 }
 
 #cards-view .card > .buttonbar {
-  margin: 0;
-  padding: 0;
+  margin: 0px;
+  padding: 0px;
+  position: absolute;
+  width: 100%;
+  top: 60rem;
+  left: 0px;
+  height: 10rem;
 }
 
 #cards-view .card > .buttonbar > button {
