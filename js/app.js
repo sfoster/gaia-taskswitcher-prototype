@@ -13,53 +13,6 @@
     return Math.min(ubound, Math.max(value, lbound))
   }
 
-  // Mock AppWindow for the purposes of this prototype
-  function AppWindow(configuration) {
-    this.instanceID = 'appwindow_' + (AppWindow._idCounter++);
-    for(var key in configuration) {
-      this[key] = configuration[key];
-    }
-  };
-  AppWindow._idCounter = 0;
-  AppWindow.prototype.CLASS_LIST = 'appWindow';
-
-  AppWindow.prototype.view = function() {
-    return '<div class=" ' + this.CLASS_LIST +
-            ' " id="' + this.instanceID +
-            '" transition-state="closed">' +
-              '<div class="titlebar">' + this.title + '</div>' +
-              '<div class="screenshot-overlay"></div>' +
-              '<div class="identification-overlay">' +
-                '<div>' +
-                  '<div class="icon"></div>' +
-                  '<span class="title"></span>' +
-                '</div>' +
-              '</div>' +
-              '<div class="fade-overlay"></div>' +
-              '<div class="touch-blocker"></div>' +
-              '<div class="browser-container"><iframe src="'+this.src+'"></iframe></div>' +
-           '</div>';
-  }
-  AppWindow.prototype.render = function() {
-    this.containerElement = document.getElementById('windows');
-    this.containerElement.insertAdjacentHTML('beforeend', this.view());
-    this.element = document.getElementById(this.instanceID);
-
-    var overlay = '.identification-overlay';
-    this.identificationOverlay = this.element.querySelector(overlay);
-    var icon = '.identification-overlay .icon';
-    this.identificationIcon = this.element.querySelector(icon);
-    var title = '.identification-overlay .title';
-    this.identificationTitle = this.element.querySelector(title);
-
-    this.identificationTitle.textContent = this.name;
-
-    if (this.identificationIcon) {
-      this.identificationIcon.style.backgroundImage =
-        'url("' + this.iconUrl + '")';
-    }
-
-  };
 
   // Mock StackController for the purposes of this prototype
   StackManager = {
@@ -119,6 +72,11 @@
           this.element.removeEventListener('scroll', this.parent);
         }
       };
+
+      this.previousCard = new TaskCard({ id: 'card-previous'});
+      this.currentCard = new TaskCard({ id: 'card-current'});
+      this.nextCard = new TaskCard({ id: 'card-next'});
+
       this._positionAppPreviews();
       this.currentPosition = 1; // get from stackmanager, but will normally be 1;
       this.selectAppAtIndex(this.currentPosition);
@@ -126,11 +84,9 @@
     },
     _positionAppPreviews: function() {
       var stack = this.stack;
-      console.log('got stack: ', stack);
       var count = stack.length;
-      // this._registerEvents();
-      console.log('/init');
       var totalWidth = 0;
+
       Array.forEach(stack, function(appWindow, idx, coln) {
         var leftValue = this._calculateCardPosition(idx, coln);
         var isLast = (idx === count - 1);
@@ -140,8 +96,8 @@
         };
         totalWidth += leftValue;
         // console.log('move appWindow to task-manager: ', appWindow, appWindow.element);
-        appWindow.element.classList.add('in-taskmanager');
-        this.applyStyle(appWindow.element, style);
+        appWindow.enterTaskManager();
+        appWindow.applyStyle(style);
       }, this);
       var container = document.querySelector('#windows');
       var cardWidth = (this._cardWidth / 2) + GUTTER_WIDTH; // 50% width + GUTTER_WIDTHpx gutter
@@ -151,11 +107,19 @@
       container.classList.add('scrollable');
     },
     selectAppAtIndex: function(position) {
+      if (!position || position < 0 || position >= this.stack.length) {
+        // out of bounds position, default to 0
+        position = 0;
+      }
+      this.currentPosition = position;
       var scaledCardWidth = (this._cardWidth / 2);
       this.scrollToPosition(position);
       // this.overlay.style.left = this._getAppAtPosition(position).element.style.left;
       // console.log('overlay left:: ', this._getAppAtPosition(position).element.style.left);
       console.log('selectAppAtIndex: ', position);
+      this.previousCard.update(this.stack[position - 1], position - 1);
+      this.currentCard.update(this.stack[position], position);
+      this.nextCard.update(this.stack[position + 1], position + 1);
     },
     removeCard: function(card) {
 

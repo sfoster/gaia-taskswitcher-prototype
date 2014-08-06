@@ -1,4 +1,7 @@
 #screen.cards-view > #windows {
+  position: absolute;
+  top: 0; left: 0;
+  z-index: 1;
   width: 100%;
   height: 100%;
   overflow-x: auto;
@@ -7,17 +10,6 @@
   white-space: nowrap;
   -moz-box-sizing: border-box;
   -moz-user-select: none;
-}
-#windows {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-  top: 0; left: 0;
-  z-index: 1;
-}
-#windows.scrollable {
-  overflow-x: auto;
 }
 
 #cards-view {
@@ -46,7 +38,7 @@
   transform: translateX(672px);
 }
 
-#screen.cards-view > #windows > .appWindow.in-taskmanager:not(.lockScreenWindow) {
+#screen.cards-view > #windows > .appWindow.in-task-manager:not(.lockScreenWindow) {
   transform: scale(0.5);
   transform-origin: 50% 50%;
   opacity: 1;
@@ -69,11 +61,11 @@
   height: 100%;
 }
 
-.appWindow.in-taskmanager .titlebar {
+.appWindow.in-task-manager .titlebar {
   display: none;
 }
 
-.appWindow.in-taskmanager > .identification-overlay {
+.appWindow.in-task-manager > .identification-overlay {
   opacity: 1;
   position: absolute;
   bottom: 0px;
@@ -81,7 +73,7 @@
   width: 100%;
 }
 
-.appWindow.in-taskmanager > .identification-overlay > div {
+.appWindow.in-task-manager > .identification-overlay > div {
     position: static;
     top: auto;
     left: auto;
@@ -89,7 +81,7 @@
     height: auto;
 }
 
-.appWindow.in-taskmanager > .identification-overlay > div > .title {
+.appWindow.in-task-manager > .identification-overlay > div > .title {
   position: absolute;
   top: -57rem;
   display: block;
@@ -102,7 +94,7 @@
   line-height: 3rem;
 }
 
-.appWindow.in-taskmanager > .identification-overlay > div > .icon {
+.appWindow.in-task-manager > .identification-overlay > div > .icon {
   top: 2rem;
   left: calc(50% - 4rem);
   width: 8rem;
@@ -118,13 +110,13 @@
   z-index: 99999;
 }
 
-.appWindow.in-taskmanager .browser-container,
-.appWindow.in-taskmanager .browser-container iframe {
+.appWindow.in-task-manager .browser-container,
+.appWindow.in-task-manager .browser-container iframe {
   width: 100%;
   height: 100%;
   border: none;
 }
-.in-taskmanager {
+.in-task-manager {
   /*outline: 2px solid red;*/
 }
 #stretcher {
