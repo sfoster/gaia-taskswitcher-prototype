@@ -1,11 +1,11 @@
 #cards-view .card {
   position: absolute;
   display: block;
-  bottom: -4rem;
-  width: 320px;
-  height: 70rem;
-  margin: 0 0.5rem 0 0;
+  margin: 0px 0.5rem 0px 0px;
   font-size: 3em;
+  height: 100%;
+  top: 0px;
+  width: 100%;
   /*outline: 1px solid purple;*/
 }
 
@@ -36,17 +36,17 @@
 }
 
 #cards-view .card > .buttonbar {
-  margin: 0px;
-  padding: 0px;
+  padding: 0;
+  margin: 0;
   position: absolute;
-  width: 100%;
-  top: 60rem;
-  left: 0px;
-  height: 10rem;
+  width: calc(100% - 16px);
+  top: calc(75% + 2rem);
+  left: 8px;
+  height: 3rem;
 }
 
 #cards-view .card > .buttonbar > button {
-  background-size: 3.5rem auto;
+  background-size: 2rem auto;
   background-position: center top;
   background-repeat: no-repeat;
   background-color: transparent;
@@ -60,12 +60,12 @@
 }
 #cards-view .card > .buttonbar > .close-button {
   background-image: url(./images/close.png);
-  background-position: center 1rem;
+  background-position: center 0.5rem;
   left: 0;
 }
 #cards-view .card > .buttonbar > .favorite-button {
   background-image: url(./images/favorite.png);
-  background-position: center 1rem;
+  background-position: center 0.5rem;
   right: 0;
 }
 
