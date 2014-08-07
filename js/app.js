@@ -18,24 +18,20 @@
   TaskSwitcher = function(){
     this._showing = false;
     this.stack = null;
+    this.cards = [];
   };
 
   TaskSwitcher.prototype._registerEvents = function() {
-    this.overlay.addEventListener('click', this);
+    this.element.addEventListener('click', this);
     window.addEventListener('appterminated', this);
   };
   TaskSwitcher.prototype._fetchElements = function() {
     this.element = document.querySelector('#windows');
-    this.overlay = document.querySelector('#cards-view');
     this.stretcher = document.querySelector('#stretcher');
   };
   TaskSwitcher.prototype.init = function() {
     this._fetchElements();
     this._registerEvents();
-
-    this.previousCard = new TaskCard({ id: 'card-previous'});
-    this.currentCard = new TaskCard({ id: 'card-current'});
-    this.nextCard = new TaskCard({ id: 'card-next'});
 
     this._scrollListener = {
       element: this.element,
@@ -61,13 +57,17 @@
     var stack = this.stack = StackManager.snapshot();
     var appsById = this.appsById = {};
 
-    stack.forEach(function(app) {
+    this.cards = stack.map(function(app, idx) {
       appsById[app.instanceID] = app;
+      card = new TaskCard({
+        app: app,
+        position: idx
+      });
       app.enterTaskManager();
+      return card;
     });
 
     this.stretcher.style.display = 'block';
-    this.overlay.style.display = 'block';
     this.element.classList.add('scrollable');
     document.querySelector('#screen').classList.add('cards-view');
     var tmpLeft = this.element.scrollLeft;
@@ -90,7 +90,6 @@
     while((app = this.stack.shift())) {
       app.leaveTaskManager();
     }
-    this.overlay.style.display = 'none';
     this.stretcher.style.display = 'none';
     this.stretcher.style.width = 1 + this._windowWidth + 'px';
     document.querySelector('#screen').classList.remove('cards-view');
@@ -158,24 +157,23 @@
     console.log('moveToPosition: ', position);
     var scaledCardWidth = (this._cardWidth / 2);
     this.scrollToPosition(position);
-    // console.log('overlay left:: ', this._getAppAtPosition(position).element.style.left);
-    this.previousCard.update(this.stack[position - 1], position - 1);
-    this.currentCard.update(this.stack[position], position);
-    this.nextCard.update(this.stack[position + 1], position + 1);
+
+    this.cards.forEach(function(card, idx) {
+      card.update(idx - position);
+    });
   };
-  TaskSwitcher.prototype.cardAction = function (card, actionName) {
-    console.log('cardAction: ', actionName);
-    var app = this.stack[this.currentPosition];
+  TaskSwitcher.prototype.doAction = function (app, actionName) {
+    console.log('doAction: ', actionName);
     switch (actionName) {
       case 'close' :
-        console.info('cardAction: TODO: close ' + app.name);
+        console.info('doAction: TODO: close ' + app.name);
         return;
       case 'favorite' :
-        console.info('cardAction: TODO: favorite ' + app.name);
+        console.info('doAction: TODO: favorite ' + app.name);
         return;
       case 'select' :
-        this.newStackPosition = card.position;
-        console.info('cardAction: switch to app: ' + app.name);
+        this.newStackPosition = this.stack.indexOf(app);
+        console.info('doAction: switch to app: ' + app.name);
         // Card switcher will get hidden when 'appopen' is fired.
         return;
     }
@@ -190,7 +188,6 @@
   TaskSwitcher.prototype._scrollInProgress = function() {
     if (!this._scrolling) {
       console.log('start scrolling');
-      this.overlay.classList.add('scrolling');
       this._scrolling = true;
     }
     // reset timer
@@ -206,7 +203,6 @@
       this._scrollingTimerId = null;
     }
     this._scrolling = false;
-    this.overlay.classList.remove('scrolling');
 
     var nearestPosition = this.currentPosition =
         this._getNearestPositionFromScrollOffset(this.element.scrollLeft);
@@ -266,21 +262,20 @@
     var containerNode = targetNode.parentNode;
 
     var tmpNode;
-    var cardElem;
-    var card = this.getCardForElement(targetNode);
+    var app = this.getAppForElement(targetNode);
 
-    if (card && ('buttonAction' in targetNode.dataset)) {
+    if (app && ('buttonAction' in targetNode.dataset)) {
       evt.stopPropagation();
-      this.cardAction(card, targetNode.dataset.buttonAction);
+      this.doAction(app, targetNode.dataset.buttonAction);
       return;
     }
 
-    if (card) {
+    if (app) {
       // fallback action is to select the app under the tap
-      this.cardAction(card, 'select');
+      this.doAction(app, 'select');
       return;
     } else {
-      console.log('handleTap: no card match for click:', evt);
+      console.log('handleTap: no appWindow match for click:', evt);
     }
   };
   TaskSwitcher.prototype.onAppTerminated = function(evt) {
@@ -296,12 +291,12 @@
     }
   };
 
-  TaskSwitcher.prototype.getCardForElement = function(elem) {
-    var cardElem;
+  TaskSwitcher.prototype.getAppForElement = function(elem) {
+    var appElem;
     var tmpNode = elem;
     do {
-      if (tmpNode.classList && tmpNode.classList.contains('card')) {
-        cardElem = tmpNode;
+      if (tmpNode.classList && tmpNode.classList.contains('appWindow')) {
+        appElem = tmpNode;
         break;
       }
       if (tmpNode == this.element) {
@@ -309,18 +304,13 @@
       }
     } while((tmpNode = tmpNode.parentNode));
 
-    if (!cardElem) {
-      console.log('no card found for node: ', elem);
+    if (!appElem) {
+      console.log('no appWindow found for node: ', elem);
       return;
     }
-    switch (cardElem) {
-      case this.previousCard.element:
-        return this.previousCard;
-      case this.currentCard.element:
-        return this.currentCard;
-      case this.nextCard.element:
-        return this.nextCard;
-    }
+    return this.stack.filter(function(app) {
+      return app.instanceID === appElem.id;
+    })[0];
   };
 
   TaskSwitcher.prototype.scrollToPosition = function(position) {

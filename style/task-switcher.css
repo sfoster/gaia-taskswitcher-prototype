@@ -11,34 +11,6 @@
   -moz-user-select: none;
 }
 
-#cards-view {
-  position: fixed;
-  height: 65%;
-  z-index: 2;
-  opacity: 1;
-  transition: opacity 0.3s ease 0s;
-  left: 0;
-  transform-origin: 50% 0px 0px;
-  top: 17.5%;
-  width: 100%;
-}
-
-#cards-view.scrolling {
-  opacity: 0;
-}
-#card-previous.card {
-  transform: none;
-  width: calc(25% - 8px);
-}
-#card-current.card {
-  left: calc(25% - 8px);
-  width: calc(50% + 16px);
-}
-#card-next.card {
-  left: calc(75% + 16px);
-  width: calc(25% - 8px);
-}
-
 #screen.cards-view > #windows > .appWindow.in-task-manager:not(.lockScreenWindow) {
   transform: scale(0.5);
   transform-origin: 50% 50%;
@@ -109,6 +81,52 @@
   border: none;
   position: absolute;
   z-index: 99999;
+}
+
+.appWindow .buttonbar {
+  display: none;
+}
+.appWindow.in-task-manager .buttonbar {
+  pointer-events: auto;
+  display: block;
+  opacity: 0;
+  padding: 0;
+  margin: 0;
+  position: absolute;
+  width: 100%;
+  top: 0;
+  left: 0;
+  height: 6rem;
+  pointer-events: none;
+  transition: opacity 0.4s;
+}
+
+.appWindow.in-task-manager[data-cardsview-offset='0'] .buttonbar {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.appWindow.in-task-manager .buttonbar > button {
+  background-size: 4rem auto;
+  background-position: center top;
+  background-repeat: no-repeat;
+  background-color: transparent;
+  width: 20%;
+  height: 100%;
+  border: none;
+  position: absolute;
+  top: 0;
+  z-index: 99999;
+}
+.appWindow.in-task-manager .buttonbar > .close-button {
+  background-image: url(./images/close.png);
+  background-position: center 1rem;
+  left: 0;
+}
+.appWindow.in-task-manager .buttonbar > .favorite-button {
+  background-image: url(./images/favorite.png);
+  background-position: center 1rem;
+  right: 0;
 }
 
 .appWindow.in-task-manager .browser-container,

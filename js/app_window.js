@@ -19,6 +19,12 @@ AppWindow.prototype.view = function() {
                 '<div class="icon"></div>' +
                 '<span class="title"></span>' +
               '</div>' +
+              '<menu class="buttonbar">' +
+                  '<button class="close-button" data-button-action="close"' +
+                  '   role="button"></button>' +
+                  '<button class="favorite-button" data-button-action="favorite"' +
+                  '   role="button"></button>' +
+              '</menu>' +
             '</div>' +
             '<div class="fade-overlay"></div>' +
             '<div class="touch-blocker"></div>' +
