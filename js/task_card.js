@@ -17,6 +17,7 @@ TaskCard.prototype.update = function(app, position) {
   var isVisible = !!app;
   this.position = position;
   this.app = app;
+  console.log('card'+this.id+' update with app: ' + app.name + ', position: ' + position);
 
   if (this.footerMenu && wasVisible !== isVisible) {
     // immediately set pointerevents to avoid catching clicks

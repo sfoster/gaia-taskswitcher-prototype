@@ -68,11 +68,16 @@
 
     this.stretcher.style.display = 'block';
     this.overlay.style.display = 'block';
-
-    this._positionAppPreviews();
-    this.currentPosition = 1; // get from stackmanager, but will normally be 1;
-    this.moveToPosition(this.currentPosition);
-    setTimeout(this._scrollListener.start.bind(this._scrollListener), 0);
+    this.element.classList.add('scrollable');
+    document.querySelector('#screen').classList.add('cards-view');
+    var tmpLeft = this.element.scrollLeft;
+    setTimeout(function() {
+      this._positionAppPreviews();
+      this.currentPosition = 1; // get from stackmanager, but will normally be 1;
+      this.moveToPosition(this.currentPosition);
+      // wait a tick to avoid catching scroll events resulting from moveToPosition
+      setTimeout(this._scrollListener.start.bind(this._scrollListener), 0);
+    }.bind(this), 0);
   };
   TaskSwitcher.prototype.hide = function() {
     if (!this.isShown()) {
@@ -87,6 +92,9 @@
     }
     this.overlay.style.display = 'none';
     this.stretcher.style.display = 'none';
+    this.stretcher.style.width = 1 + this._windowWidth + 'px';
+    document.querySelector('#screen').classList.remove('cards-view');
+    this.element.classList.remove('scrollable');
   };
   /**
    * Is the view currently showing
@@ -123,23 +131,23 @@
     var stack = this.stack;
     var count = stack.length;
     var totalWidth = 0;
+    var cardWidth = (this._cardWidth / 2) + GUTTER_WIDTH; // 50% width + GUTTER_WIDTHpx
 
     Array.forEach(stack, function(appWindow, idx, coln) {
       var leftValue = this._calculateCardPosition(idx, coln);
+      console.log('calculated leftValue: ', leftValue, idx);
       var isLast = (idx === count - 1);
       var isFirst = (idx === 0);
       var style = {
         left: leftValue + 'px'
       };
-      totalWidth += leftValue;
+      if (idx === 0) {
+        totalWidth = leftValue + this._windowWidth;
+      }
       appWindow.applyStyle(style);
     }, this);
-    var container = document.querySelector('#windows');
-    var cardWidth = (this._cardWidth / 2) + GUTTER_WIDTH; // 50% width + GUTTER_WIDTHpx gutter
 
-    this.stretcher.style.width = this._windowWidth + ((count -1) * cardWidth) + 'px';
-
-    container.classList.add('scrollable');
+    this.stretcher.style.width = totalWidth + 'px';
   };
   TaskSwitcher.prototype.moveToPosition = function(position) {
     if (!position || position < 0 || position >= this.stack.length) {
@@ -147,27 +155,27 @@
       position = 0;
     }
     this.currentPosition = position;
+    console.log('moveToPosition: ', position);
     var scaledCardWidth = (this._cardWidth / 2);
     this.scrollToPosition(position);
-    // this.overlay.style.left = this._getAppAtPosition(position).element.style.left;
     // console.log('overlay left:: ', this._getAppAtPosition(position).element.style.left);
-    console.log('moveToPosition: ', position);
     this.previousCard.update(this.stack[position - 1], position - 1);
     this.currentCard.update(this.stack[position], position);
     this.nextCard.update(this.stack[position + 1], position + 1);
   };
   TaskSwitcher.prototype.cardAction = function (card, actionName) {
     console.log('cardAction: ', actionName);
+    var app = this.stack[this.currentPosition];
     switch (actionName) {
       case 'close' :
-        console.info('cardAction: TODO: close ' + card.app.name);
+        console.info('cardAction: TODO: close ' + app.name);
         return;
       case 'favorite' :
-        console.info('cardAction: TODO: favorite ' + card.app.name);
+        console.info('cardAction: TODO: favorite ' + app.name);
         return;
       case 'select' :
         this.newStackPosition = card.position;
-        console.info('cardAction: switch to app: ' + card.app.name);
+        console.info('cardAction: switch to app: ' + app.name);
         // Card switcher will get hidden when 'appopen' is fired.
         return;
     }
@@ -202,7 +210,7 @@
 
     var nearestPosition = this.currentPosition =
         this._getNearestPositionFromScrollOffset(this.element.scrollLeft);
-    this.scrollToPosition(nearestPosition);
+    this.moveToPosition(nearestPosition);
   };
   TaskSwitcher.prototype._getAppAtPosition = function(position) {
     return this.stack[position];
@@ -283,6 +291,7 @@
       // TODO: check spec for how to animate?
       // positioning after removing an app /should/ be cheap,
       this._positionAppPreviews();
+      console.log('appterminated handler, ', app.detail.name);
       this.moveToPosition(Math.min(position, lastIndex));
     }
   };
@@ -315,15 +324,14 @@
   };
 
   TaskSwitcher.prototype.scrollToPosition = function(position) {
-    console.log('scrollToPosition: ', position);
     this._scrollListener.stop();
     var app = this._getAppAtPosition(position);
+    console.log('scrollToPosition: ', position, app.name);
     var elem = app.element;
     var centerOffset = this._windowWidth / 2;
     var leftOffset = parseInt(elem.style.left) + (this._cardWidth/2);
     var scrollOffset = Math.max(0, leftOffset - centerOffset);
-    document.querySelector('#windows').scrollLeft = scrollOffset;
-    console.log('scrollToPosition: leftOffset: %s, scrollOffset: %', centerOffset, scrollOffset);
+    this.element.scrollLeft = scrollOffset;
     setTimeout(this._scrollListener.start.bind(this._scrollListener), 0);
   };
   TaskSwitcher.prototype.scrollBy = function(change, velocity, callback) {
@@ -378,7 +386,9 @@
   StackManager.init();
   var taskSwitcher = new TaskSwitcher();
   taskSwitcher.init();
-  taskSwitcher.show();
+  setTimeout(function() {
+    taskSwitcher.show();
+  }, 250)
 
   exports.taskSwitcher = taskSwitcher;
 })(window);
