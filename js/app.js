@@ -74,7 +74,7 @@
     setTimeout(function() {
       this._positionAppPreviews();
       this.currentPosition = 1; // get from stackmanager, but will normally be 1;
-      this.moveToPosition(this.currentPosition);
+      this.moveToPosition(this.currentPosition, true);
       // wait a tick to avoid catching scroll events resulting from moveToPosition
       setTimeout(this._scrollListener.start.bind(this._scrollListener), 0);
     }.bind(this), 0);
@@ -148,32 +148,42 @@
 
     this.stretcher.style.width = totalWidth + 'px';
   };
-  TaskSwitcher.prototype.moveToPosition = function(position) {
+  TaskSwitcher.prototype.moveToPosition = function(position, doScroll) {
     if (!position || position < 0 || position >= this.stack.length) {
       // out of bounds position, default to 0
       position = 0;
     }
     this.currentPosition = position;
     console.log('moveToPosition: ', position);
-    var scaledCardWidth = (this._cardWidth / 2);
-    this.scrollToPosition(position);
+    if (doScroll) {
+      this.scrollToPosition(position);
+    }
 
     this.cards.forEach(function(card, idx) {
-      card.update(idx - position);
-    });
+      var offset = idx - position;
+      if (Math.abs(offset) >= 1) {
+        var evt = new CustomEvent('onviewport');
+        evt.detail = card.app;
+        card.app.element.dispatchEvent(new CustomEvent('onviewport'));
+      }
+      card.update(offset);
+    }, this);
   };
   TaskSwitcher.prototype.doAction = function (app, actionName) {
     console.log('doAction: ', actionName);
     switch (actionName) {
       case 'close' :
         console.info('doAction: TODO: close ' + app.name);
+        alert('Close ' + app.name);
         return;
       case 'favorite' :
         console.info('doAction: TODO: favorite ' + app.name);
+        alert('Favorite ' + app.name);
         return;
       case 'select' :
         this.newStackPosition = this.stack.indexOf(app);
         console.info('doAction: switch to app: ' + app.name);
+        alert('Switch to ' + app.name);
         // Card switcher will get hidden when 'appopen' is fired.
         return;
     }
@@ -206,7 +216,7 @@
 
     var nearestPosition = this.currentPosition =
         this._getNearestPositionFromScrollOffset(this.element.scrollLeft);
-    this.moveToPosition(nearestPosition);
+    this.moveToPosition(nearestPosition, false);
   };
   TaskSwitcher.prototype._getAppAtPosition = function(position) {
     return this.stack[position];
@@ -287,7 +297,7 @@
       // positioning after removing an app /should/ be cheap,
       this._positionAppPreviews();
       console.log('appterminated handler, ', app.detail.name);
-      this.moveToPosition(Math.min(position, lastIndex));
+      this.moveToPosition(Math.min(position, lastIndex), true);
     }
   };
 

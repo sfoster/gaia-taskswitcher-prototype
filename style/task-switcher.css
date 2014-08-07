@@ -89,7 +89,7 @@
 .appWindow.in-task-manager .buttonbar {
   pointer-events: auto;
   display: block;
-  opacity: 0;
+  opacity: 1;
   padding: 0;
   margin: 0;
   position: absolute;
@@ -97,13 +97,13 @@
   top: 0;
   left: 0;
   height: 6rem;
-  pointer-events: none;
   transition: opacity 0.4s;
 }
 
-.appWindow.in-task-manager[data-cardsview-offset='0'] .buttonbar {
-  opacity: 1;
-  pointer-events: auto;
+.appWindow.in-task-manager[data-cardsview-offset='-1'] .buttonbar,
+.appWindow.in-task-manager[data-cardsview-offset='0'] .buttonbar,
+.appWindow.in-task-manager[data-cardsview-offset='1'] .buttonbar {
+  /* Cards/AppWindows in the viewport */
 }
 
 .appWindow.in-task-manager .buttonbar > button {
